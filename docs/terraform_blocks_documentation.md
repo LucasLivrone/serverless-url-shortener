@@ -1,11 +1,11 @@
 # Terraform blocks documentation
 
-* <a href="#lambda.tf">iam.tf</a>
-  * <a href="#aws_iam_role.iam_for_lambda">aws_iam_role.iam_for_lambda</a>
-  * <a href="#aws_iam_role_policy_attachment.lambda_policy">aws_iam_role_policy_attachment.lambda_policy</a>
-  * <a href="#aws_iam_role_policy.dynamodb_lambda_policy">aws_iam_role_policy.dynamodb_lambda_policy</a>
-* <a href="#lambda.tf">lambda.tf</a>
-  * <a href="#data.archive_file.lambda_functions_zip">data.archive_file.lambda_functions_zip</a>
+* <a href="#iamtf">iam.tf</a>
+  * <a href="#aws_iam_roleiam_for_lambda">aws_iam_role.iam_for_lambda</a>
+  * <a href="#aws_iam_role_policy_attachmentlambda_policy">aws_iam_role_policy_attachment.lambda_policy</a>
+  * <a href="#aws_iam_role_policydynamodb_lambda_policy">aws_iam_role_policy.dynamodb_lambda_policy</a>
+* <a href="#lambdatf">lambda.tf</a>
+  * <a href="#dataarchive_filelambda_functions_zip">data.archive_file.lambda_functions_zip</a>
   * <a href="#aws_lambda_functionlambda_functions">aws_lambda_function.lambda_functions</a>
 
 ---
