@@ -6,7 +6,7 @@
   * <a href="#aws_iam_role_policy.dynamodb_lambda_policy">aws_iam_role_policy.dynamodb_lambda_policy</a>
 * <a href="#lambda.tf">lambda.tf</a>
   * <a href="#data.archive_file.lambda_functions_zip">data.archive_file.lambda_functions_zip</a>
-  * <a href="#aws_lambda_function.lambda_functions">aws_lambda_function.lambda_functions</a>
+  * <a href="#aws_lambda_functionlambda_functions">aws_lambda_function.lambda_functions</a>
 
 ---
 
