@@ -1,3 +1,4 @@
+# DynamoDB table
 resource "aws_dynamodb_table" "urls_db" {
   name         = "urls-db"
   billing_mode = "PAY_PER_REQUEST"

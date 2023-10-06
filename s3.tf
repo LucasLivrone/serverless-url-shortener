@@ -1,3 +1,4 @@
+# Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
   bucket        = "serverless-url-shortener" # Bucket name must be unique
   force_destroy = true                       # This setting will allow Terraform to destroy the bucket even if it's not empty.
@@ -7,6 +8,7 @@ resource "aws_s3_bucket" "static_website" {
   }
 }
 
+# Specify website properties for the S3 Bucket
 resource "aws_s3_bucket_website_configuration" "web_configuration" {
   bucket = aws_s3_bucket.static_website.id
 
@@ -19,6 +21,7 @@ resource "aws_s3_bucket_website_configuration" "web_configuration" {
   }
 }
 
+# Enable versioning for the S3 bucket
 resource "aws_s3_bucket_versioning" "bucket_versioning" {
   bucket = aws_s3_bucket.static_website.id
   versioning_configuration {
@@ -26,6 +29,7 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
   }
 }
 
+# Set bucket ownership controls to "BucketOwnerPreferred"
 resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
   bucket = aws_s3_bucket.static_website.id
   rule {
@@ -33,6 +37,7 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
   }
 }
 
+# Configure public access settings for the S3 bucket
 resource "aws_s3_bucket_public_access_block" "bucket_public_access" {
   bucket = aws_s3_bucket.static_website.id
 
@@ -42,6 +47,7 @@ resource "aws_s3_bucket_public_access_block" "bucket_public_access" {
   restrict_public_buckets = false
 }
 
+# Set the ACL for the S3 bucket to allow public read access to objects
 resource "aws_s3_bucket_acl" "bucket_acl" {
   depends_on = [
     aws_s3_bucket_ownership_controls.bucket_ownership_controls,
@@ -52,6 +58,7 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
   acl    = "public-read"
 }
 
+# Define a bucket policy that allows the get the objects from the S3 bucket
 resource "aws_s3_bucket_policy" "bucket-policy" {
   depends_on = [
     aws_s3_bucket.static_website,

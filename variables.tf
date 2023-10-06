@@ -1,9 +1,12 @@
 variable "aws_region" {
-  type    = string
-  default = "us-east-1"
+  description = "AWS region where the resources are going the be provisioned."
+  type        = string
+  default     = "us-east-1"
 }
 
 variable "lambda_functions" {
+  description = "Details of the required Lambda functions and their expected API Gateway route"
+
   type = list(object({
     name        = string
     description = string

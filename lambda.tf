@@ -1,3 +1,4 @@
+# Create ZIP archives for Lambda functions' source code
 data "archive_file" "lambda_functions_zip" {
   count       = length(var.lambda_functions)
   type        = "zip"
@@ -5,6 +6,7 @@ data "archive_file" "lambda_functions_zip" {
   output_path = "${var.lambda_functions[count.index].name}.zip"
 }
 
+# Define AWS Lambda functions using ZIP archives as source code
 resource "aws_lambda_function" "lambda_functions" {
   count            = length(var.lambda_functions)
   filename         = data.archive_file.lambda_functions_zip[count.index].output_path

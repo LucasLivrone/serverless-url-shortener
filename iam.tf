@@ -1,3 +1,4 @@
+# IAM role for AWS Lambda
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam-for-lambda"
 
@@ -15,11 +16,13 @@ resource "aws_iam_role" "iam_for_lambda" {
   })
 }
 
+# Attach AWS Lambda basic execution policy to IAM role
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# IAM policy allowing DynamoDB access for Lambda
 resource "aws_iam_role_policy" "dynamodb_lambda_policy" {
   name = "dynamodb-lambda-policy"
   role = aws_iam_role.iam_for_lambda.id

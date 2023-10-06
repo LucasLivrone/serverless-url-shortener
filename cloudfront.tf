@@ -1,3 +1,4 @@
+# CloudFront distribution for the API Gateway and S3 Static Website
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
   enabled = true
