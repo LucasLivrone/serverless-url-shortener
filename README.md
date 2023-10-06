@@ -5,14 +5,14 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 ### Index
 * <a href="#solution-architecture">Solution Architecture</a>
   * <a href="#solution-flow">Solution Flow</a>
-* <a href="#terraform">Terraform</a>
-  * <a href="#configuration-files">Configuration Files</a>
-  * <a href="#terraform-docs">terraform-docs</a>
-  * <a href="#terraform-blocks-documentation">Terraform Blocks Documentation</a>
 * <a href="#provision-and-deployment">Provision and Deployment</a>
   * <a href="#prerequisite">Prerequisite</a>
   * <a href="#run">Run</a>
   * <a href="#destroy">Destroy</a>
+* <a href="#terraform">Terraform</a>
+  * <a href="#terraform-docs">terraform-docs</a>
+  * <a href="#configuration-files">Configuration Files</a>
+  * <a href="#terraform-blocks-documentation">Terraform Blocks Documentation</a>
 * <a href="#demo">Demo</a>
   * <a href="#add-url-pair">Add URL pair</a>
   * <a href="#access-url">Access URL</a>
@@ -26,6 +26,26 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 
 ### Solution Flow
 
+1. The users access the URL shortener by using a custom domain thanks to Route 53 DNS routing service.
+2. Route 53 directs the users to the CloudFront distribution.
+3. The CloudFront distribution serves an S3 static website, providing a user-friendly interface for the URL shortener.
+4. When users add or delete URL pairs, the S3 static website communicates with an API Gateway endpoint to send the request and display the feedback.
+5. The API Gateway triggers the corresponding Lambda function that performs the requested action and provide feedback.
+6. The Lambda functions will create or delete records in DynamoDB and respond with success or failure feedback.
+7. When users use the URL shortener to redirect, a Lambda@Edge function is executed.
+8. The Lambda@Edge function retrieves the full URL from DynamoDB based on the provided keyword.
+9. The user's browser is redirected to the desired web page URL, completing the redirection process.
+
+---
+
+## Provisioning and Deployment
+
+### Prerequisite
+
+### Run
+
+### Destroy
+
 ---
 
 ##  Terraform
@@ -34,7 +54,7 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 
 ``terraform-docs`` is a utility to generate documentation from Terraform modules in various output formats.
 
-It can be triggered by GitHub Actions thanks to the following workflow: **[.github/workflows/terraform-docs.yaml](.github/workflows/terraform-docs.yaml)**
+It can be automatically triggered by GitHub Actions thanks to the following workflow: **[.github/workflows/terraform-docs.yaml](.github/workflows/terraform-docs.yaml)**
 
 The documentation it generates is located at **[docs/terraform-docs.md](docs/terraform-docs.md)**
 
@@ -55,16 +75,6 @@ More info can be found at https://terraform-docs.io/
 
 ### Terraform Blocks Documentation
 Terraform blocks documentation can be found at **[docs/terraform_blocks_documentation.md](docs/terraform_blocks_documentation.md)**
-
----
-
-## Provisioning and Deployment
-
-### Prerequisite
-
-### Run
-
-### Destroy
 
 ---
 
