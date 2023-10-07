@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
   # S3 Static Website
   origin {
-    domain_name = aws_s3_bucket.static_website.website_endpoint
+    domain_name = aws_s3_bucket_website_configuration.web_configuration.website_endpoint
     origin_id   = "s3-origin"
     custom_origin_config {
       http_port              = 80
