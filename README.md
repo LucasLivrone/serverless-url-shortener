@@ -10,9 +10,10 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
   * <a href="#run">Run</a>
   * <a href="#destroy">Destroy</a>
 * <a href="#terraform">Terraform</a>
-  * <a href="#terraform-docs">terraform-docs</a>
   * <a href="#configuration-files">Configuration Files</a>
-  * <a href="#terraform-blocks-documentation">Terraform Blocks Documentation</a>
+  * <a href="#s3-backend-setup">S3 Backend setup</a>
+  * <a href="#terraform-docs">terraform-docs</a>
+  * <a href="#extra-terraform-documentation">Extra Terraform documentation</a>
 * <a href="#demo">Demo</a>
   * <a href="#add-url-pair">Add URL pair</a>
   * <a href="#access-url">Access URL</a>
@@ -50,15 +51,6 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 
 ##  Terraform
 
-### terraform-docs
-
-``terraform-docs`` is a utility to generate documentation from Terraform modules in various output formats.
-
-It can be automatically triggered by GitHub Actions thanks to the following workflow: **[.github/workflows/terraform-docs.yaml](.github/workflows/terraform-docs.yaml)**
-
-The documentation it generates is located at **[docs/terraform-docs.md](docs/terraform-docs.md)**
-
-More info can be found at https://terraform-docs.io/
 
 ### Configuration Files
 | Configuration file | Description                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -72,9 +64,22 @@ More info can be found at https://terraform-docs.io/
 | ``api_gateway.tf`` | Performs the following actions:<br/>1. Creates the **HTTP** type API Gateway<br/>2. Attaches the stage called **url-shortener** to it.<br/>3. Setup API logging into CloudWatch.<br/>4. Integrates the Lambda functions URI to the API Gateway with an **AWS_PROXY** type.<br/>5. Creates the Lambdas routes (endpoints) using above integrations.<br/>6. Establish **AllowExecutionFromAPIGateway** permission for the Lambda functions. |
 | ``s3.tf``          | Perform the following actions for hosting a static website that servers as a landing page:<br/>1. Creates a bucket called **serverless-url-shortener**.<br/>2. Specifies the bucket web files (*index.html* & *error.html*).<br/>3. Enables versioning in the bucket.<br/>4. Establishes a bucket public access ACL settings.<br/>5. Attaches a public access bucket policy.                                                              |
 
+### S3 Backend setup
 
-### Terraform Blocks Documentation
-Terraform blocks documentation can be found at **[docs/terraform_blocks_documentation.md](docs/terraform_blocks_documentation.md)**
+
+### terraform-docs
+
+``terraform-docs`` is a utility to generate documentation from Terraform modules in various output formats.
+
+It can be automatically triggered by GitHub Actions thanks to the following workflow: **[.github/workflows/terraform-docs.yaml](.github/workflows/terraform-docs.yaml)**
+
+The documentation it generates is located at **[docs/terraform-docs.md](docs/terraform-docs.md)**
+
+More info can be found at https://terraform-docs.io/
+
+### Extra Terraform documentation
+
+Extra documentation about the Terraform blocks and resources used for this solution can be found at **[docs/terraform_blocks_documentation.md](docs/extra-terraform-documentation.md)**
 
 ---
 

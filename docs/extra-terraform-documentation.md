@@ -1,4 +1,6 @@
-# Terraform blocks documentation
+# Extra Terraform documentation
+
+Extra documentation about the Terraform blocks and resources used for this solution
 
 * <a href="#iamtf">iam.tf</a>
   * <a href="#aws_iam_roleiam_for_lambda">aws_iam_role.iam_for_lambda</a>
