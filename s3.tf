@@ -86,3 +86,19 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
       ]
   })
 }
+
+# Upload html/index.html into s3://serverless-url-shortener
+resource "aws_s3_object" "index_html" {
+  bucket       = aws_s3_bucket.static_website.id
+  key          = "index.html"
+  source       = "html/index.html"
+  content_type = "text/html"
+}
+
+# Upload html/error.html into s3://serverless-url-shortener
+resource "aws_s3_object" "error_html" {
+  bucket       = aws_s3_bucket.static_website.id
+  key          = "error.html"
+  source       = "html/error.html"
+  content_type = "text/html"
+}
