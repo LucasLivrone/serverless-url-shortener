@@ -1,4 +1,4 @@
-# IAM role for AWS Lambda
+# IAM role for AWS Lambda and Lambda@Edge
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam-for-lambda"
 

@@ -28,14 +28,14 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 ### Solution Flow
 
 1. The users access the URL shortener by using a custom domain thanks to Route 53 DNS routing service.
-2. Route 53 directs the users to the CloudFront distribution.
+2. AWS Certificate Manager (ACM) handles the SSL/TLS certificate and Route 53 directs the users to the CloudFront distribution. 
 3. The CloudFront distribution serves an S3 static website, providing a user-friendly interface for the URL shortener.
 4. When users add or delete URL pairs, the S3 static website communicates with an API Gateway endpoint to send the request and display the feedback.
 5. The API Gateway triggers the corresponding Lambda function that performs the requested action and provide feedback.
 6. The Lambda functions will create or delete records in DynamoDB and respond with success or failure feedback.
 7. When users use the URL shortener to redirect, a Lambda@Edge function is executed.
-8. The Lambda@Edge function retrieves the full URL from DynamoDB based on the provided keyword.
-9. The user's browser is redirected to the desired web page URL, completing the redirection process.
+8. The Lambda@Edge triggers a function that retrieves the full URL from DynamoDB based on the provided keyword.
+9. The user's browser is redirected to the desired web page URL, completing the redirection process. It will also be redirected to an Error site in case the web page URL is not found on the DB.
 
 ---
 
