@@ -21,3 +21,27 @@ resource "aws_lambda_function" "lambda_functions" {
     Description = var.lambda_functions[count.index].description
   }
 }
+
+
+# Create ZIP file for the Lambda@Edge function
+data "archive_file" "lambda_edge" {
+  type        = "zip"
+  source_dir  = "lambdas/"
+  output_path = "lambda_edge.zip"
+}
+
+# Define Lambda@Edge function using ZIP archive as source code
+resource "aws_lambda_function" "lambda_edge" {
+  function_name    = "lambda_edge"
+  filename         = data.archive_file.lambda_edge.output_path
+  source_code_hash = data.archive_file.lambda_edge.output_base64sha256
+  role             = aws_iam_role.iam_for_lambda.arn
+  handler          = "lambda_edge.lambda_handler"
+  runtime          = "python3.11"
+  publish          = true
+
+  tags = {
+    Name        = "lambda_edge"
+    Description = "Translates /foo to /url-shortener/foo"
+  }
+}

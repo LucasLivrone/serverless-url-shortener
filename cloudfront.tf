@@ -18,7 +18,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
-  # API Gateway
+  # API Gateway origin
   origin {
     domain_name = "${aws_apigatewayv2_api.api_gw.id}.execute-api.${var.aws_region}.amazonaws.com"
     origin_id   = "api-gateway-origin"
@@ -30,6 +30,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
+  # API Gateway behavior
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
@@ -47,9 +48,16 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
+
+    # Lambda@Edge function
+    lambda_function_association {
+      event_type   = "origin-request"
+      lambda_arn   = aws_lambda_function.lambda_edge.qualified_arn
+      include_body = true
+    }
   }
 
-  # S3 Static Website
+  # S3 Static Website origin
   origin {
     domain_name = aws_s3_bucket_website_configuration.web_configuration.website_endpoint
     origin_id   = "s3-origin"
@@ -61,6 +69,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
   }
 
+  # S3 Static Website behavior
   ordered_cache_behavior {
     target_origin_id       = "s3-origin"
     viewer_protocol_policy = "redirect-to-https"
@@ -80,7 +89,6 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     default_ttl = 3600
     max_ttl     = 86400
   }
-
 
 }
 

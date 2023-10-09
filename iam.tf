@@ -8,7 +8,7 @@ resource "aws_iam_role" "iam_for_lambda" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Service" : "lambda.amazonaws.com"
+          "Service" : ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
         },
         "Action" : "sts:AssumeRole"
       }
