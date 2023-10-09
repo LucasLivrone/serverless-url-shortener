@@ -126,6 +126,10 @@ After this validation is finished, Terraform will continue provisioning resource
 
 ### Destroy
 
+````bash
+$ terraform destroy
+````
+
 ---
 
 ##  Terraform
