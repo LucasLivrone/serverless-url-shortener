@@ -41,9 +41,88 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 
 ## Provisioning and Deployment
 
-### Prerequisite
+### Prerequisites
+
+**1. Install Terraform**
+
+**2. Create an AWS account and create a credentials file**
+
+**3. Prepare your variables**
+
+```
+# terraform.tfvars
+domain_name = "your-domain"
+subdomain   = "your-subdomain"
+```
+
+**4. Update DNS nameservers**
+
+This solution is using AWS Certificate Manager alongside Route 53 in order to be exposed using a custom domain.
+
+However, before the Amazon certificate authority (CA) can issue a certificate for your site, AWS Certificate Manager (ACM) must prove that you own or control all of the domain names that you specify in your request.
+
+This solution contemplates that AWS Route 53 will handle all DNS requests for your domain, and you manage your DNS records within Route 53.
+
+In the scenario that you own a domain from any registrar other than Route 53 (e.g. GoDaddy, Hostinger, etc.), a prerequisite is that you have access to update the DNS Nameserver for the domain.
+
+**Example:**
+
+![prerequisite_domain_registrar](img/prerequisite_domain_registrar.png)
+
+Once Terraform has created the Route 53 hosted zoned, it would be necessary to manually update above DNS Nameservers in the domain registrar.
+
+
 
 ### Run
+
+**1. Initialize Terraform by downloading required modules and plugins:**
+````bash
+$ terraform init
+````
+
+**2. Verify the Terraform resources that will be created:**
+````bash
+$ terraform plan
+ ````
+
+**3. Provision the resources:**
+````bash
+$ terraform apply
+````
+
+**4. Manually update DNS Nameservers in the domain registrar:**
+
+Once the Terraform execution log shows that the Hosted Zone has been created, it's required to access to it from the AWS Console and update the Domain Registrar Nameservers:
+
+    aws_route53_zone.hosted_zone: Creation complete after 35s [id=Z04841651NZPBRIVGO677]
+
+![prerequisite_1_create_route53_hosted_zone](img/route53_hosted_zone_nameservers.png)
+
+![prerequisite_2_update_domain_registrar_nameservers](img/update_domain_registrar_nameservers.png)
+
+During the ``terraform apply`` execution, the ACM certificate validation will be waiting until the DNS records are updated. 
+
+In my experience this process usually takes 30 minutes:
+
+    aws_acm_certificate_validation.acm_certificate_validation: Still creating... [50s elapsed]
+    aws_acm_certificate_validation.acm_certificate_validation: Still creating... [1m0s elapsed]
+    aws_acm_certificate_validation.acm_certificate_validation: Still creating... [1m10s elapsed]
+    ...
+    ...
+    aws_acm_certificate_validation.acm_certificate_validation: Still creating... [34m0s elapsed]
+    aws_acm_certificate_validation.acm_certificate_validation: Still creating... [34m10s elapsed]
+    aws_acm_certificate_validation.acm_certificate_validation: Creation complete after 34m20s [id=0001-01-01 00:00:00 +0000 UTC]
+
+
+After this validation is finished, Terraform will continue provisioning resources. You will be presented these URLs at the end:
+
+    Apply complete! Resources: 35 added, 0 changed, 0 destroyed.
+    
+    Outputs:
+    
+    cloudfront_domain_name = "https://d3ofhljujqulf6.cloudfront.net"
+    serverless-url-shortener = "https://serverless-url-shortener.lucaslivrone.tech"
+
 
 ### Destroy
 

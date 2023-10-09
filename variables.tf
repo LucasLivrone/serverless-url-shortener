@@ -4,6 +4,16 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "domain_name" {
+  type        = string
+  description = "Domain name for the Hosted Zone created by Route 53"
+}
+
+variable "subdomain" {
+  type        = string
+  description = "Subdomain of the Hosted Zone that will point to the CloudFront domain"
+}
+
 variable "lambda_functions" {
   description = "Details of the required Lambda functions and their expected API Gateway route"
 

@@ -3,6 +3,21 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
   enabled = true
 
+  # List of alternate domain names (CNAMEs) to associate with the distribution
+  aliases = ["${var.subdomain}.${var.domain_name}"]
+
+  # Specify the SSL certificate ARN for the CNAMEs
+  viewer_certificate {
+    acm_certificate_arn = aws_acm_certificate_validation.acm_certificate_validation.certificate_arn
+    ssl_support_method  = "sni-only"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
   # API Gateway
   origin {
     domain_name = "${aws_apigatewayv2_api.api_gw.id}.execute-api.${var.aws_region}.amazonaws.com"
@@ -66,16 +81,6 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     max_ttl     = 86400
   }
 
-  # Additional CloudFront configuration settings
 
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = true
-  }
 }
 
