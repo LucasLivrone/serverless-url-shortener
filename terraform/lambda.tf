@@ -1,7 +1,7 @@
 # Create ZIP archives for Lambda functions' source code
 data "archive_file" "lambda_functions_zip" {
   type        = "zip"
-  source_dir  = "lambdas/"
+  source_dir  = "../lambdas/"
   output_path = "lambda_functions.zip"
 }
 
