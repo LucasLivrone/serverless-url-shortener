@@ -13,7 +13,6 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
   * <a href="#configuration-files">Configuration Files</a>
   * <a href="#s3-backend-setup">S3 Backend setup</a>
   * <a href="#terraform-docs">terraform-docs</a>
-  * <a href="#extra-terraform-documentation">Extra Terraform documentation</a>
 * <a href="#demo">Demo</a>
   * <a href="#add-url-pair">Add URL pair</a>
   * <a href="#access-url">Access URL</a>
@@ -159,10 +158,6 @@ It can be automatically triggered by GitHub Actions thanks to the following work
 The documentation it generates is located at **[docs/terraform-docs.md](docs/terraform-docs.md)**
 
 More info can be found at https://terraform-docs.io/
-
-### Extra Terraform documentation
-
-Extra documentation about the Terraform blocks and resources used for this solution can be found at **[docs/terraform_blocks_documentation.md](docs/extra-terraform-documentation.md)**
 
 ---
 
