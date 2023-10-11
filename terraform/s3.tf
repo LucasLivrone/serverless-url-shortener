@@ -1,7 +1,7 @@
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
   bucket        = var.bucket
-  force_destroy = true                       # This setting will allow Terraform to destroy the bucket even if it's not empty.
+  force_destroy = true # This setting will allow Terraform to destroy the bucket even if it's not empty.
 
   tags = {
     Name = var.bucket
