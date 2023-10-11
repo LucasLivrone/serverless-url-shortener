@@ -59,7 +59,7 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
 }
 
 # Define a bucket policy that allows the get the objects from the S3 bucket
-resource "aws_s3_bucket_policy" "bucket-policy" {
+resource "aws_s3_bucket_policy" "bucket_policy" {
   depends_on = [
     aws_s3_bucket.static_website,
     aws_s3_bucket_acl.bucket_acl
@@ -69,6 +69,7 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
 
   policy = jsonencode(
     {
+      "Version" : "2012-10-17",
       "Id" : "Policy",
       "Statement" : [
         {
@@ -91,7 +92,7 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
 resource "aws_s3_object" "index_html" {
   bucket       = aws_s3_bucket.static_website.id
   key          = "index.html"
-  source       = "html/index.html"
+  source       = "../html/index.html"
   content_type = "text/html"
 }
 
@@ -99,6 +100,6 @@ resource "aws_s3_object" "index_html" {
 resource "aws_s3_object" "error_html" {
   bucket       = aws_s3_bucket.static_website.id
   key          = "error.html"
-  source       = "html/error.html"
+  source       = "../html/error.html"
   content_type = "text/html"
 }
