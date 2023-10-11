@@ -5,14 +5,12 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 ### Index
 * <a href="#solution-architecture">Solution Architecture</a>
   * <a href="#solution-flow">Solution Flow</a>
-* <a href="#provision-and-deployment">Provision and Deployment</a>
-  * <a href="#prerequisite">Prerequisite</a>
+* <a href="#terraform">Terraform</a>
+  * <a href="#terraform-docs">terraform-docs</a>
+* <a href="#provisioning-and-deployment">Provisioning and Deployment</a>
+  * <a href="#prerequisites">Prerequisites</a>
   * <a href="#run">Run</a>
   * <a href="#destroy">Destroy</a>
-* <a href="#terraform">Terraform</a>
-  * <a href="#configuration-files">Configuration Files</a>
-  * <a href="#s3-backend-setup">S3 Backend setup</a>
-  * <a href="#terraform-docs">terraform-docs</a>
 * <a href="#demo">Demo</a>
   * <a href="#add-url-pair">Add URL pair</a>
   * <a href="#access-url">Access URL</a>
@@ -38,23 +36,90 @@ Serverless URL shortener using Route 53, CloudFront, S3, API Gateway, Lambda and
 
 ---
 
+##  Terraform
+
+| Configuration file | Description                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ``acm.tf``         | Creates an AWS ACM (Amazon Certificate Manager) certificate for a custom domain and subdomain, with DNS validation. It also tracks the validation status of the certificate to ensure successful validation before proceeding with other resource creation or updates that depend on the validated certificate.                                                                                                               |
+| ``api_gateway.tf`` | Defines and provisions an AWS API Gateway named "url-shortener-api" with an HTTP protocol, including a deployment stage for it, and configures access logging to a CloudWatch Logs group. It also sets up AWS_PROXY integrations between the API Gateway and AWS Lambda functions, defines the API Gateway routes for the Lambda functions, and grants permissions for the Lambda functions to be invoked by the API Gateway. |
+| ``backend.tf``     | Specifies the use of an S3 backend to store the Terraform state file and state lock information. It defines the S3 bucket, key (file path within the bucket), AWS region, encryption settings, and a DynamoDB table for state locking to provide safe and concurrent access to the Terraform state.                                                                                                                           |
+| ``cloudfront.tf``  | Defines an AWS CloudFront distribution that serves as a content delivery network for both an API Gateway and an S3 static website, specifying various settings and behaviors for routing and caching. It also also associates a Lambda@Edge function that will help with the URL redirect.                                                                                                                                    |
+| ``dynamodb.tf``    | Creates an AWS DynamoDB table named "urls-db" with a billing mode of "PAY_PER_REQUEST" (on-demand capacity mode), and it defines a primary key attribute "keyword".                                                                                                                                                                                                                                                           |
+| ``iam.tf``         | Defines an IAM role named "iam-for-lambda" for AWS Lambda and Lambda@Edge, attaches the AWS Lambda basic execution policy to it, and creates an IAM policy allowing access to a DynamoDB table for Lambda functions.                                                                                                                                                                                                          |
+| ``lambda.tf``      | Creates AWS Lambda functions and Lambda@Edge function, using ZIP archives as their source code, with specified roles and configurations.                                                                                                                                                                                                                                                                                      |
+| ``outputs.tf``     | Defines an output named "serverless-url-shortener" that provides the URL of the "serverless-url-shortener" application, which is constructed using the fully qualified domain name (FQDN) of an AWS Route 53 record for a subdomain associated with the application.                                                                                                                                                          |
+| ``providers.tf``   | Specifies the required Terraform provider and its version. It defines the configuration for the AWS provider, specifying the AWS region.                                                                                                                                                                                                                                                                                      |
+| ``route53.tf``     | Sets up Route 53 DNS (Domain Name System) configurations for the specified domain and subdomain by configuring the necessary DNS records for routing traffic to the appropriate AWS resources and for validating the ACM certificate, allowing for secure and reliable domain management.                                                                                                                                     |
+| ``s3.tf``          | Creates and configures an AWS S3 bucket to host a static website, enables versioning, sets ownership controls and public access settings, and uploads the index.html and error.html files.                                                                                                                                                                                                                                    |
+| ``variables.tf``   | Defines various input variables for the Terraform configuration, including the AWS region, domain name, subdomain, details of Lambda functions and their expected API Gateway routes, S3 bucket name for HTML files, S3 bucket name and key for Terraform state files, and the DynamoDB table used for state locking.                                                                                                         |
+| ``versions.tf``    | Specifies the required Terraform version for the project.                                                                                                                                                                                                                                                                                                                                                                     |
+
+
+### terraform-docs
+
+``terraform-docs`` is a utility for automatically generating documentation from your Terraform modules in various output formats.
+
+It can be triggered by an automated workflow using GitHub Actions to ensure that your documentation is always up to date. You can find the workflow configuration in **[.github/workflows/documentation.yml](.github/workflows/documentation.yml)**.
+
+The generated documentation is available in the **[docs/terraform-docs.md](docs/terraform-docs.md)** file.
+
+For more detailed information on terraform-docs and its capabilities, please visit the official website at [terraform-docs.io](https://terraform-docs.io/).
+
+---
+
 ## Provisioning and Deployment
 
 ### Prerequisites
 
 **1. Install Terraform**
 
-**2. Create an AWS account and create a credentials file**
+* Visit the official Terraform website to download the latest version for your operating system: https://developer.hashicorp.com/terraform/downloads
+* Verify the installation by running ``terraform --version`` in your terminal or command prompt. You should see the installed version displayed.
 
-**3. Prepare your variables**
+**2. Create an AWS account and ACCESS KEYS**
 
-```
-# terraform.tfvars
-domain_name = "your-domain"
-subdomain   = "your-subdomain"
-```
+* Visit https://aws.amazon.com/
+* Click on the "Create an AWS Account" button and follow the registration process. You will need to provide your personal information and payment details.
+* After your AWS account is set up, sign in to the AWS Management Console.
+* In the AWS Management Console, navigate to the "IAM (Identity and Access Management)" service.
+* Create an IAM user for programmatic access by following these steps:
+  * Click on "Users" in the left sidebar.
+  * Click on the "Add user" button.
+  * Enter a username and select "Programmatic access" as the access type.
+  * Set permissions for the user according to your requirements. For basic Terraform usage, you might want to attach the "AdministratorAccess" policy to the user for simplicity. However, it's recommended to follow the principle of least privilege and grant only the necessary permissions for your specific use case.
+  * Review and create the user, and note down the ACCESS_KEY_ID and SECRET_ACCESS_KEY when they are displayed. These keys are required for AWS CLI and Terraform operations.
 
-**4. Update DNS nameservers**
+If you are using Linux OS, make sure these ACCESS KEYS are located in the following file:
+
+````bash
+$ cat ~/.aws/credentials
+[default]
+aws_access_key_id = <ACCESS_KEY_ID>
+aws_secret_access_key = <SECRET_ACCESS_KEY>
+````
+
+
+**3. Add GitHub Actions secrets and variables for the Terraform**
+
+This solution contemplates the use of input variables that Terraform will use for the configuration.
+
+As the deployment process is automated by GitHub Actions, it's required that you create the following GitHub repository **secrets** and **variables**:
+
+| Secrets                        | Description                                                                                 |
+|--------------------------------|---------------------------------------------------------------------------------------------|
+| AWS_ACCESS_KEY_ID              | ACCESS_KEY_ID created on step 2.                                                            |
+| AWS_SECRET_ACCESS_KEY          | SECRET_ACCESS_KEY created on step 2.                                                        |
+
+| Variables                      | Description                                                                                 |
+|--------------------------------|---------------------------------------------------------------------------------------------|
+| TF_VAR_domain_name             | Domain name for the Hosted Zone created by Route 53.                                        |
+| TF_VAR_subdomain               | Subdomain of the Hosted Zone that will point to the CloudFront domain.                      |
+| TF_VAR_bucket                  | The name of the S3 bucket where the HTML files will be stored. Should be unique across AWS. |
+| TF_VAR_tf_state_backend_bucket | The name of the S3 bucket where the Terraform state files will be stored.                   |
+| TF_VAR_tf_state_backend_key    | The key (object key) in the S3 bucket where the Terraform state file is stored.             |
+| TF_VAR_tf_state_lock           | DynamoDB table to use for state locking.                                                    |
+
+**4. Get access to manage the domain registrar DNS nameservers**
 
 This solution is using AWS Certificate Manager alongside Route 53 in order to be exposed using a custom domain.
 
@@ -70,28 +135,33 @@ In the scenario that you own a domain from any registrar other than Route 53 (e.
 
 Once Terraform has created the Route 53 hosted zoned, it would be necessary to manually update above DNS Nameservers in the domain registrar.
 
+**5. Provision the S3 backend resources**
 
+After the previous steps are done, and before we can continue with the provisioning of the solution, it's required to set up the resources required for the S3 backend to store the Terraform state file and state lock information. 
+
+These are an S3 bucket, key (file path within the bucket), AWS region, encryption settings, and a DynamoDB table for state locking to provide safe and concurrent access to the Terraform state.
+
+````bash
+/serverless-url-shortener $ cd s3-remote-backend/terraform
+/serverless-url-shortener/s3-remote-backend/terraform $ cat <<EOF > terraform.tfvars
+tf_state_backend_bucket = "<same value as used for TF_VAR_tf_state_backend_bucket in step 3>"
+tf_state_lock = "<same value as used for TF_VAR_tf_state_lock in step 3>"
+EOF
+/serverless-url-shortener/s3-remote-backend/terraform $ terraform init
+/serverless-url-shortener/s3-remote-backend/terraform $ terraform apply -auto-approve
+````
+
+With these resources provisioned, we are good to continue.
 
 ### Run
 
-**1. Initialize Terraform by downloading required modules and plugins:**
-````bash
-$ terraform init
-````
+**1. Trigger the GitHub Actions workflows**
 
-**2. Verify the Terraform resources that will be created:**
-````bash
-$ terraform plan
- ````
 
-**3. Provision the resources:**
-````bash
-$ terraform apply
-````
 
-**4. Manually update DNS Nameservers in the domain registrar:**
+**2. Manually update DNS Nameservers in the domain registrar:**
 
-Once the Terraform execution log shows that the Hosted Zone has been created, it's required to access to it from the AWS Console and update the Domain Registrar Nameservers:
+Once the GitHub Action workflows log shows that the Hosted Zone has been created, the next step is to access to it from the AWS Console and update the Domain Registrar Nameservers:
 
     aws_route53_zone.hosted_zone: Creation complete after 35s [id=Z04841651NZPBRIVGO677]
 
@@ -112,52 +182,32 @@ In my experience this process usually takes 30 minutes:
     aws_acm_certificate_validation.acm_certificate_validation: Still creating... [34m10s elapsed]
     aws_acm_certificate_validation.acm_certificate_validation: Creation complete after 34m20s [id=0001-01-01 00:00:00 +0000 UTC]
 
+**3. Access the solution URL**
 
-After this validation is finished, Terraform will continue provisioning resources. You will be presented these URLs at the end:
 
-    Apply complete! Resources: 35 added, 0 changed, 0 destroyed.
-    
-    Outputs:
-    
-    cloudfront_domain_name = "https://d3ofhljujqulf6.cloudfront.net"
-    serverless-url-shortener = "https://serverless-url-shortener.lucaslivrone.tech"
 
 
 ### Destroy
 
-````bash
-$ terraform destroy
+In order to destroy the resources created by the ``terraform-deployment.yml`` workflow you can add these steps:
+````yaml
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Destroy
+        run: |
+          cd terraform
+          terraform init
+          terraform destroy -auto-approve
 ````
 
+
+
 ---
-
-##  Terraform
-
-
-### Configuration Files
-| Configuration file | Description                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ``versions.tf``    | Specifies AWS provider version and region. Default profile will be used.                                                                                                                                                                                                                                                                                                                                                                  |
-| ``cloudfront.tf``  | Creates a CloudFront distribution with both origin and behaviour for the **API Gateway** and the **S3 static website**.                                                                                                                                                                                                                                                                                                                   |
-| ``dynamodb.tf``    | Creates the DynamoDB Key-Value database table.<br/>* Table is named: **urls_db**<br/>* Primary key is named: **keyword**<br/>* Value attribute will be named: **full_url**<br/>* On-Demand capacity mode is enabled with **PAY_PER_REQUEST** billing mode.                                                                                                                                                                                |
-| ``variables.tf``   | Defines the following Lambda functions metadata (name, description and endpoint):<br/>* **add-url-pair** - Adds a new URL pair into the database. It will warn you if the **keyword** is already in use.<br/>* **delete-url-pair** - Removes a URL pair from the database. It will warn you if the **keyword** is not in use.<br/>* **redirect** -                                                                                        |
-| ``iam.tf``         | Performs the following actions:<br/>1. Creates the IAM role for Lambda.<br/>2. Attaches an *AWSLambdaBasicExecutionRole* policy to it.<br/>3. Creates a policy to allow all DynamoDB actions on the created table performed by the Lambda role.                                                                                                                                                                                           |
-| ``lambda.tf``      | Creates the Lambda functions defined on ``variables.tf`` using the Python functions located at ``/lambdas`` and assigns them the role created on ``iam.tf``.                                                                                                                                                                                                                                                                              |
-| ``api_gateway.tf`` | Performs the following actions:<br/>1. Creates the **HTTP** type API Gateway<br/>2. Attaches the stage called **url-shortener** to it.<br/>3. Setup API logging into CloudWatch.<br/>4. Integrates the Lambda functions URI to the API Gateway with an **AWS_PROXY** type.<br/>5. Creates the Lambdas routes (endpoints) using above integrations.<br/>6. Establish **AllowExecutionFromAPIGateway** permission for the Lambda functions. |
-| ``s3.tf``          | Perform the following actions for hosting a static website that servers as a landing page:<br/>1. Creates a bucket called **serverless-url-shortener**.<br/>2. Specifies the bucket web files (*index.html* & *error.html*).<br/>3. Enables versioning in the bucket.<br/>4. Establishes a bucket public access ACL settings.<br/>5. Attaches a public access bucket policy.                                                              |
-
-### S3 Backend setup
-
-
-### terraform-docs
-
-``terraform-docs`` is a utility to generate documentation from Terraform modules in various output formats.
-
-It can be automatically triggered by GitHub Actions thanks to the following workflow: **[.github/workflows/terraform-docs.yaml](.github/workflows/terraform-docs.yaml)**
-
-The documentation it generates is located at **[docs/terraform-docs.md](docs/terraform-docs.md)**
-
-More info can be found at https://terraform-docs.io/
 
 ---
 
