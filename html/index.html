@@ -23,9 +23,21 @@
             <input type="submit" value="Submit">
         </form>
 
+        <br>
+        <br>
+
+        <h3>Delete an existing URL pair:</h3>
+        <form id="deleteUrlForm">
+            <label for="deleteKeyword">Keyword:</label>
+            <input type="text" id="deleteKeyword" name="deleteKeyword" required>
+            <br><br>
+            <input type="submit" value="Delete">
+        </form>
+
         <div id="responseContainer"></div>
 
         <script>
+            // Register a new URL pair
             document.getElementById("urlShortenerForm").addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
@@ -56,6 +68,48 @@
                             return response.text(); // Get the HTML content as text
                         } else {
                             throw new Error("Failed to fetch data"); // Handle other response statuses as needed
+                        }
+                    })
+                    .then(html => {
+                        const responseContainer = document.getElementById("responseContainer");
+                        responseContainer.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error("An error occurred:", error);
+                    });
+            });
+        </script>
+
+        <script>
+            // Delete an existing URL pair
+            document.getElementById("deleteUrlForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get the value from the "deleteKeyword" field
+                const deleteKeywordValue = document.getElementById("deleteKeyword").value;
+
+                // Create a JavaScript object with the data
+                const formData = {
+                    deleteKeyword: deleteKeywordValue
+                };
+
+                // Convert the JavaScript object to JSON
+                const jsonData = JSON.stringify(formData);
+
+                // Send the JSON data to the specified endpoint for deletion
+                fetch("/url-shortener/delete-url-pair", {
+                    method: "POST",
+                    body: jsonData,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        // Check if the response status is 200 (Found)
+                        if (response.status === 200) {
+                            return response.text(); // Get the HTML content as text
+                        } else {
+                            throw new Error("Failed to delete URL pair"); // Handle other response statuses as needed
                         }
                     })
                     .then(html => {
