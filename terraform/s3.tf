@@ -1,10 +1,10 @@
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
-  bucket        = "serverless-url-shortener" # Bucket name must be unique
+  bucket        = var.bucket
   force_destroy = true                       # This setting will allow Terraform to destroy the bucket even if it's not empty.
 
   tags = {
-    Name = "serverless-url-shortener"
+    Name = var.bucket
   }
 }
 
@@ -88,7 +88,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   })
 }
 
-# Upload html/index.html into s3://serverless-url-shortener
+# Upload index.html into the bucket
 resource "aws_s3_object" "index_html" {
   bucket       = aws_s3_bucket.static_website.id
   key          = "index.html"
@@ -96,7 +96,7 @@ resource "aws_s3_object" "index_html" {
   content_type = "text/html"
 }
 
-# Upload html/error.html into s3://serverless-url-shortener
+# Upload error.html into the bucket
 resource "aws_s3_object" "error_html" {
   bucket       = aws_s3_bucket.static_website.id
   key          = "error.html"

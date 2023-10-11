@@ -42,6 +42,12 @@ variable "lambda_functions" {
   ]
 }
 
+variable "bucket" {
+  description = "The name of the S3 bucket where the HTML files will be stored. Should be unique across AWS."
+  type        = string
+}
+
+
 variable "tf_state_backend_bucket" {
   description = "The name of the S3 bucket where the Terraform state files will be stored"
   type        = string
