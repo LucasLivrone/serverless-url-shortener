@@ -7,13 +7,11 @@ variable "aws_region" {
 variable "domain_name" {
   description = "Domain name for the Hosted Zone created by Route 53"
   type        = string
-  required    = true
 }
 
 variable "subdomain" {
   description = "Subdomain of the Hosted Zone that will point to the CloudFront domain"
   type        = string
-  required    = true
 }
 
 variable "lambda_functions" {
@@ -47,17 +45,14 @@ variable "lambda_functions" {
 variable "tf_state_backend_bucket" {
   description = "The name of the S3 bucket where the Terraform state files will be stored"
   type        = string
-  required    = true
 }
 
 variable "tf_state_backend_key" {
   description = "The key (object key) in the S3 bucket where the Terraform state file is stored"
   type        = string
-  required    = true
 }
 
 variable "tf_state_lock" {
   description = "DynamoDB table to use for state locking"
   type        = string
-  required    = true
 }
