@@ -17,8 +17,45 @@ def lambda_handler(event, context):
 
     table = dynamodb.Table('urls-db')
 
-    pattern = "^(https?|http):\/\/[0-9A-Za-z.]+\\.[0-9A-Za-z.]+\\.[a-z]+$"
-    valid_url = re.match(pattern, full_url)
+    keyword_pattern = r"^[a-z]+$"
+
+    valid_keyword = re.match(keyword_pattern, keyword)
+
+    if not valid_keyword:
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>ERROR</title>
+            <style>
+                body {{
+                    font-family: 'Font Name', sans-serif;
+                }}
+                h2 {{
+                    color: red;
+                }}
+            </style>
+        </head>
+        <body>
+            <h2>The keyword "{keyword}" is not valid!</h2>
+        </body>
+        </html>
+        """
+
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'text/html'
+            },
+            'body': html
+        }
+
+    url_pattern = (r"(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,"
+               r"})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{"
+               r"2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,"
+               r"}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?")
+
+    valid_url = re.match(url_pattern, full_url)
 
     if valid_url:
 
@@ -34,13 +71,13 @@ def lambda_handler(event, context):
                     body {{
                         font-family: 'Font Name', sans-serif;
                     }}
-                    h1 {{
+                    h2 {{
                         color: orange;
                     }}
                 </style>
             </head>
             <body>
-                <h1>The keyword "{keyword}" is already in use!</h1>
+                <h2>The keyword "{keyword}" is already in use!</h2>
             </body>
             </html>
             """
@@ -61,13 +98,13 @@ def lambda_handler(event, context):
                     body {{
                         font-family: 'Font Name', sans-serif;
                     }}
-                    h1 {{
+                    h2 {{
                         color: green;
                     }}
                 </style>
             </head>
             <body>
-                <h1>New URL pair [ {keyword} ==> {full_url} ] has been added!</h1>
+                <h2>New URL pair [ {keyword} ==> {full_url} ] has been added!</h2>
             </body>
             </html>
             """
@@ -81,13 +118,13 @@ def lambda_handler(event, context):
                 body {{
                     font-family: 'Font Name', sans-serif;
                 }}
-                h1 {{
+                h2 {{
                     color: red;
                 }}
             </style>
         </head>
         <body>
-            <h1>The URL "{full_url}" is not valid!</h1>
+            <h2>The URL "{full_url}" is not valid!</h2>
         </body>
         </html>
         """
