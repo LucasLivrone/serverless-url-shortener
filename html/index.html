@@ -1,67 +1,79 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>URL Shortener</title>
-</head>
-<body>
-    <h1>Welcome to the serverless URL shortener service!</h1>
-    <h3>Register a new URL pair:</h3>
-    <form id="urlShortenerForm">
-        <label for="keyword">Keyword:</label>
-        <input type="text" id="keyword" name="keyword" required>
-        <br><br>
+    <head>
+        <title>URL Shortener</title>
+        <style>
+            body {
+                font-family: 'Font Name', sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Welcome to the serverless URL shortener service!</h1>
+        <h3>Register a new URL pair:</h3>
+        <form id="urlShortenerForm">
+            <label for="keyword">Keyword:</label>
+            <input type="text" id="keyword" name="keyword" required>
+            <br><br>
 
-        <label for="full_url">Full URL:</label>
-        <input type="text" id="full_url" name="full_url" required>
-        <br><br>
+            <label for="full_url">Full URL:</label>
+            <input type="text" id="full_url" name="full_url" required>
+            <br><br>
 
-        <input type="submit" value="Submit">
-    </form>
+            <input type="submit" value="Submit">
+        </form>
 
-    <div id="responseContainer"></div>
+        <div id="responseContainer"></div>
 
-    <script>
-        document.getElementById("urlShortenerForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the default form submission
+        <script>
+            document.getElementById("urlShortenerForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent the default form submission
 
-            // Get the values from the form fields
-            const keywordUrlValue = document.getElementById("keyword").value;
-            const fullUrlValue = document.getElementById("full_url").value;
+                // Get the values from the form fields
+                const keywordUrlValue = document.getElementById("keyword").value;
+                const fullUrlValue = document.getElementById("full_url").value;
 
-            // Create a JavaScript object with the data
-            const formData = {
-                keyword: keywordUrlValue,
-                full_url: fullUrlValue
-            };
+                // Create a JavaScript object with the data
+                const formData = {
+                    keyword: keywordUrlValue,
+                    full_url: fullUrlValue
+                };
 
-            // Convert the JavaScript object to JSON
-            const jsonData = JSON.stringify(formData);
+                // Convert the JavaScript object to JSON
+                const jsonData = JSON.stringify(formData);
 
-            // Send the JSON data to the specified endpoint
-            fetch("/url-shortener/add-url-pair", {
-                method: "POST",
-                body: jsonData,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    // Check if the response status is 200 (Found)
-                    if (response.status === 200) {
-                        return response.text(); // Get the HTML content as text
-                    } else {
-                        throw new Error("Failed to fetch data"); // Handle other response statuses as needed
+                // Send the JSON data to the specified endpoint
+                fetch("/url-shortener/add-url-pair", {
+                    method: "POST",
+                    body: jsonData,
+                    headers: {
+                        "Content-Type": "application/json"
                     }
                 })
-                .then(html => {
-                    const responseContainer = document.getElementById("responseContainer");
-                    responseContainer.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error("An error occurred:", error);
-                });
-        });
-    </script>
+                    .then(response => {
+                        // Check if the response status is 200 (Found)
+                        if (response.status === 200) {
+                            return response.text(); // Get the HTML content as text
+                        } else {
+                            throw new Error("Failed to fetch data"); // Handle other response statuses as needed
+                        }
+                    })
+                    .then(html => {
+                        const responseContainer = document.getElementById("responseContainer");
+                        responseContainer.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error("An error occurred:", error);
+                    });
+            });
+        </script>
 
-</body>
+    </body>
+
+    <footer>
+        <br>
+        <br>
+        <p>More info about this project can be found at <a href="https://github.com/LucasLivrone/serverless-url-shortener" target="_blank">github.com/LucasLivrone/serverless-url-shortener</a></p>
+    </footer>
+
 </html>

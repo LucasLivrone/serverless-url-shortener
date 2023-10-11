@@ -30,6 +30,14 @@ def lambda_handler(event, context):
             <html>
             <head>
                 <title>ERROR</title>
+                <style>
+                    body {{
+                        font-family: 'Font Name', sans-serif;
+                    }}
+                    h1 {{
+                        color: orange;
+                    }}
+                </style>
             </head>
             <body>
                 <h1>The keyword "{keyword}" is already in use!</h1>
@@ -49,6 +57,14 @@ def lambda_handler(event, context):
             <html>
             <head>
                 <title>Success</title>
+                <style>
+                    body {{
+                        font-family: 'Font Name', sans-serif;
+                    }}
+                    h1 {{
+                        color: green;
+                    }}
+                </style>
             </head>
             <body>
                 <h1>New URL pair [ {keyword} ==> {full_url} ] has been added!</h1>
@@ -61,6 +77,14 @@ def lambda_handler(event, context):
         <html>
         <head>
             <title>ERROR</title>
+            <style>
+                body {{
+                    font-family: 'Font Name', sans-serif;
+                }}
+                h1 {{
+                    color: red;
+                }}
+            </style>
         </head>
         <body>
             <h1>The URL "{full_url}" is not valid!</h1>

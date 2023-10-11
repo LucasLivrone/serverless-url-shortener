@@ -30,9 +30,18 @@ def lambda_handler(event, context):
         <html>
         <head>
             <title>ERROR</title>
+            <style>
+                body {{
+                    font-family: 'Font Name', sans-serif;
+                }}
+                h1 {{
+                    color: red;
+                }}
+            </style>
         </head>
         <body>
             <h1>The keyword "{keyword}" is not in use!</h1>
+            <h3>For more info checkout <a href="https://github.com/LucasLivrone/serverless-url-shortener">github.com/LucasLivrone/serverless-url-shortener</a></h3>
         </body>
         </html>
         """
