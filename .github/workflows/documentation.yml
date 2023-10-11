@@ -16,6 +16,6 @@ jobs:
         uses: terraform-docs/gh-actions@main
         with:
           working-dir: ./terraform
-          output-file: ../docs/terraform-docs.md
+          output-file: terraform-docs.md
           output-method: inject
           git-push: "true"
