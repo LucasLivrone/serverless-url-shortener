@@ -23,6 +23,8 @@
             <input type="submit" value="Submit">
         </form>
 
+        <div id="responseContainer"></div>
+
         <br>
         <br>
 
@@ -34,7 +36,10 @@
             <input type="submit" value="Delete">
         </form>
 
-        <div id="responseContainer"></div>
+        <div id="responseContainerDelete"></div>
+
+        <br>
+        <br>
 
         <script>
             // Register a new URL pair
@@ -113,8 +118,8 @@
                         }
                     })
                     .then(html => {
-                        const responseContainer = document.getElementById("responseContainer");
-                        responseContainer.innerHTML = html;
+                        const responseContainerDelete = document.getElementById("responseContainer");
+                        responseContainerDelete.innerHTML = html;
                     })
                     .catch(error => {
                         console.error("An error occurred:", error);
@@ -125,8 +130,6 @@
     </body>
 
     <footer>
-        <br>
-        <br>
         <p>More info about this project can be found at <a href="https://github.com/LucasLivrone/serverless-url-shortener" target="_blank">github.com/LucasLivrone/serverless-url-shortener</a></p>
     </footer>
 

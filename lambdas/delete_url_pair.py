@@ -15,7 +15,7 @@ def lambda_handler(event, context):
             * If it doesn't exist, it will return an error.
     """
     response_body = json.loads(event['body'])
-    keyword = response_body['keyword']
+    keyword = response_body['deleteKeyword']
 
     keyword_pattern = r"^[a-z]+$"
 
@@ -71,7 +71,7 @@ def lambda_handler(event, context):
                 </style>
             </head>
             <body>
-                <h2>The keyword "{keyword}" is already not in use!</h2>
+                <h2>The keyword "{keyword}" is not in use!</h2>
             </body>
             </html>
             """
