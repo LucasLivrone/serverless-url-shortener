@@ -29,5 +29,5 @@ jobs:
       - name: Deploy with Terraform
         run: |
           cd terraform
-          terraform init -backend-config=backend.tf
+          terraform init -backend-config=backend-config.tf
           terraform apply -auto-approve
