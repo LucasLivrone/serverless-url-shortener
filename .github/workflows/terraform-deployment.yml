@@ -16,6 +16,9 @@ jobs:
       TF_VAR_subdomain: ${{ vars.SUBDOMAIN }}
       TF_VAR_bucket: ${{ vars.BUCKET }}
       TF_VAR_region: ${{ vars.REGION }}
+      TF_VAR_tf_state_backend_bucket: ${{ vars.TF_STATE_BACKEND_BUCKET }}
+      TF_VAR_tf_state_backend_key: ${{ vars.TF_STATE_BACKEND_KEY }}
+      TF_VAR_tf_state_lock: ${{ vars.TF_STATE_LOCK }}
 
     steps:
       - name: Checkout code
