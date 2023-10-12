@@ -36,4 +36,4 @@ jobs:
           -backend-config="region=${{ vars.REGION }}" \
           -backend-config="dynamodb_table=${{ vars.TF_STATE_LOCK }}" \
           -backend-config="encrypt=true"
-          terraform destroy -auto-approve
+          terraform apply -auto-approve
