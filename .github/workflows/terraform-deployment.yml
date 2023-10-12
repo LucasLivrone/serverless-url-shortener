@@ -36,5 +36,4 @@ jobs:
           -backend-config="region=${{ vars.REGION }}" \
           -backend-config="dynamodb_table=${{ vars.TF_STATE_LOCK }}" \
           -backend-config="encrypt=true"
-          terraform force-unlock -force a283fe5c-d062-1053-2000-c1d0162ac113
-          terraform plan
+          terraform apply -auto-approve
