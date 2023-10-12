@@ -34,5 +34,5 @@ jobs:
           -backend-config="key=${{ vars.TF_VAR_tf_state_backend_key }}" \
           -backend-config="region=us-east-1" \
           -backend-config="dynamodb_table=${{ vars.TF_VAR_tf_state_lock }}" \
-          -backend-config="encrypt=true" \
+          -backend-config="encrypt=true"
           terraform apply -auto-approve
