@@ -27,7 +27,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Deploy with Terraform
+      - name: Destroy with Terraform
         run: |
           cd terraform
           terraform init \
