@@ -27,7 +27,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Destroy with Terraform
+      - name: Deploy with Terraform
         run: |
           cd terraform
           terraform init \
@@ -36,4 +36,4 @@ jobs:
           -backend-config="region=${{ vars.REGION }}" \
           -backend-config="dynamodb_table=${{ vars.TF_STATE_LOCK }}" \
           -backend-config="encrypt=true"
-          terraform destroy -auto-approve
+          terraform apply -auto-approve
