@@ -1,6 +1,18 @@
 # Serverless URL shortener
 
-Serverless URL shortener using Route 53, ACM, CloudFront, S3, API Gateway, Lambda, and DynamoDB, provisioned by Terraform with an S3 backend and using GitHub Actions
+🚀 Serverless URL Shortener using a stack of AWS services, Terraform, and GitHub Actions for CI/CD.
+
+🌐 In today's digital age, convenience is key, and URL shorteners play a vital role in simplifying the sharing of links, enhancing user experience, and providing valuable data and branding opportunities.
+
+💡 **Why manage your own URL shortener?** While there are many options out there, taking control of your own solution can provide numerous benefits, including full control over its functionality and appearance, in-depth analytics like link clicks and user engagement, enhanced privacy and minimizing the risk of service disruptions or changes caused by third party providers.
+
+📌 **Technology Stack:** Utilized AWS services like Route 53, ACM, CloudFront, S3, API Gateway, Lambda, and DynamoDB to create a robust, serverless infrastructure.
+
+🛠️ **Terraform Provisioning:** Orchestrated the entire setup using Terraform with an S3 backend, ensuring Infrastructure as Code (IaC) practices, seamless state management, and easy scalability.
+
+🔄 **CI/CD with GitHub Actions:** Automated deployments and updates with a seamless CI/CD workflow, making the development process efficient and reliable.
+
+📚 **Comprehensive Documentation:** Every aspect of this project is meticulously documented in my GitHub repository. Thanks to GitHub Actions and terraform-docs, documentation is automatically generated, making it easier for anyone to understand, replicate, and extend this setup.
 
 ### Index
 * <a href="#solution-architecture">Solution Architecture</a>
